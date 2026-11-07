@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>небо · погода без лишнего</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0e17; --card:#121828; --line:rgba(255,255,255,.08);
+  --txt:#e8ecf5; --mut:#8b93a7; --acc:#5b8cff; --warm:#ffb454;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;
+  background-image:radial-gradient(ellipse 70% 45% at 70% -10%, rgba(91,140,255,.16), transparent),
+                   radial-gradient(ellipse 50% 35% at 10% 110%, rgba(255,180,84,.09), transparent)}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:28px 0}
+.brand{font-weight:700;font-size:19px;letter-spacing:-.02em}
+.brand span{color:var(--acc)}
+.loc-btn{background:none;border:1px solid var(--line);color:var(--mut);padding:9px 16px;border-radius:99px;
+  font-family:inherit;font-size:13px;cursor:pointer;transition:.2s}
+.loc-btn:hover{border-color:var(--acc);color:var(--txt)}
+
+.search{margin:30px 0 8px;position:relative}
+.search input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:18px 52px 18px 22px;color:var(--txt);font-family:inherit;font-size:17px;outline:none;transition:.2s}
+.search input:focus{border-color:var(--acc);box-shadow:0 0 0 4px rgba(91,140,255,.12)}
+.search button{position:absolute;right:8px;top:8px;bottom:8px;width:44px;border:none;border-radius:12px;
+  background:var(--acc);color:#fff;font-size:18px;cursor:pointer}
+.hint{color:var(--mut);font-size:13px;margin-bottom:26px}
+.hint.err{color:#ff7b7b}
+
+.now{background:linear-gradient(160deg,var(--card),#0e1424);border:1px solid var(--line);
+  border-radius:24px;padding:38px 34px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.city{font-size:15px;color:var(--mut);margin-bottom:6px}
+.city b{color:var(--txt);font-size:17px}
+.big{font-size:88px;font-weight:700;line-height:1;letter-spacing:-.04em}
+.big sup{font-size:34px;color:var(--mut);font-weight:500}
+.cond{font-size:16px;color:var(--mut);margin-top:10px}
+.icon{font-size:86px;filter:drop-shadow(0 8px 24px rgba(91,140,255,.35))}
+
+.chips{display:flex;gap:12px;margin:22px 0;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.hour{min-width:86px;background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:16px 10px;text-align:center;flex-shrink:0}
+.hour .t{font-size:12px;color:var(--mut);margin-bottom:8px}
+.hour .i{font-size:26px;margin-bottom:6px}
+.hour .v{font-weight:700;font-size:15px}
+
+.days{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px}
+.day{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 8px;text-align:center}
+.day .d{font-size:12px;color:var(--mut);text-transform:capitalize;margin-bottom:10px}
+.day .i{font-size:30px;margin-bottom:8px}
+.day .hi{font-weight:700}
+.day .lo{color:var(--mut);font-size:13px}
+
+.extra{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0 60px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.stat .l{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+.stat .v{font-size:22px;font-weight:700;margin-top:6px}
+.stat .v small{font-size:13px;color:var(--mut);font-weight:400}
+
+.skel{border-radius:24px;height:200px;background:linear-gradient(90deg,var(--card) 25%,#1a2338 50%,var(--card) 75%);
+  background-size:200% 100%;animation:sh 1.2s infinite;margin:22px 0}
+@keyframes sh{to{background-position:-200% 0}}
+
+@media(max-width:560px){.now{flex-direction:column;text-align:center}.big{font-size:72px}.extra{grid-template-columns:1fr 1fr}}
+</style>
+<base target="_blank">
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">небо<span>.</span>сегодня</div>
+    <button class="loc-btn" id="geo">📍 Моё местоположение</button>
+  </div>
+
+  <div class="search">
+    <input id="q" placeholder="Город — например, Казань" autocomplete="off">
+    <button id="go">→</button>
+  </div>
+  <div class="hint" id="hint">Данные — Open-Meteo, геокодинг — OpenStreetMap. Без ключей и регистрации.</div>
+
+  <div id="app"></div>
+</div>
+
+<script>
+const app = document.getElementById('app');
+const hint = document.getElementById('hint');
+const WMO = {0:['☀️','Ясно'],1:['🌤','Преимущественно ясно'],2:['⛅','Переменная облачность'],3:['☁️','Пасмурно'],
+ 45:['🌫','Туман'],48:['🌫','Изморозь'],51:['🌦','Морось'],53:['🌦','Морось'],55:['🌦','Сильная морось'],
+ 61:['🌧','Небольшой дождь'],63:['🌧','Дождь'],65:['🌧','Сильный дождь'],66:['🌧','Ледяной дождь'],67:['🌧','Ледяной дождь'],
+ 71:['🌨','Небольшой снег'],73:['🌨','Снег'],75:['❄️','Сильный снег'],77:['❄️','Снежная крупа'],
+ 80:['🌦','Ливень'],81:['🌧','Ливень'],82:['⛈','Сильный ливень'],85:['🌨','Снегопад'],86:['🌨','Снегопад'],
+ 95:['⛈','Гроза'],96:['⛈','Гроза с градом'],99:['⛈','Сильная гроза']};
+const icon = c => WMO[c]?.[0] || '🌡';
+const text = c => WMO[c]?.[1] || '—';
+const DOW = ['вс','пн','вт','ср','чт','пт','сб'];
+
+function skeleton(){ app.innerHTML = '<div class="skel"></div><div class="skel" style="height:120px"></div>'; }
+function fail(msg){ hint.classList.add('err'); hint.textContent = msg; app.innerHTML=''; }
+
+async function load(lat, lon, name){
+  skeleton(); hint.classList.remove('err');
+  try{
+    const u = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+      `&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code,pressure_msl` +
+      `&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7`;
+    const r = await fetch(u); if(!r.ok) throw 0;
+    const d = await r.json();
+    render(d, name);
+    hint.textContent = name + ' · обновлено только что · данные Open-Meteo';
+  }catch{ fail('Не удалось загрузить данные. Проверьте интернет и попробуйте снова.'); }
+}
+
+function render(d, name){
+  const c = d.current;
+  const hours = d.hourly.time.slice(0,24).map((t,i)=>({t:+t.slice(11,13), v:Math.round(d.hourly.temperature_2m[i]), i:d.hourly.weather_code[i]}));
+  app.innerHTML = `
+  <div class="now">
+    <div>
+      <div class="city">сейчас в <b>${name}</b></div>
+      <div class="big">${Math.round(c.temperature_2m)}<sup>°C</sup></div>
+      <div class="cond">${text(c.weather_code)} · ощущается ${Math.round(c.apparent_temperature)}°</div>
+    </div>
+    <div class="icon">${icon(c.weather_code)}</div>
+  </div>
+  <div class="chips">${hours.slice(new Date().getHours(), new Date().getHours()+12).map(h=>`
+    <div class="hour"><div class="t">${String(h.t).padStart(2,'0')}:00</div><div class="i">${icon(h.i)}</div><div class="v">${h.v}°</div></div>`).join('')}
+  </div>
+  <div class="days">${d.daily.time.slice(0,7).map((t,i)=>{const dt=new Date(t); return `
+    <div class="day"><div class="d">${DOW[dt.getDay()]} ${dt.getDate()}</div><div class="i">${icon(d.daily.weather_code[i])}</div>
+    <div class="hi">${Math.round(d.daily.temperature_2m_max[i])}°</div><div class="lo">${Math.round(d.daily.temperature_2m_min[i])}°</div></div>`;}).join('')}
+  </div>
+  <div class="extra">
+    <div class="stat"><div class="l">Ветер</div><div class="v">${Math.round(c.wind_speed_10m)} <small>км/ч</small></div></div>
+    <div class="stat"><div class="l">Влажность</div><div class="v">${c.relative_humidity_2m} <small>%</small></div></div>
+    <div class="stat"><div class="l">Давление</div><div class="v">${Math.round(c.pressure_msl)} <small>гПа</small></div></div>
+  </div>`;
+}
+
+async function search(city){
+  if(!city.trim()) return;
+  skeleton(); hint.classList.remove('err'); hint.textContent='Ищем город…';
+  try{
+    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=ru`);
+    const g = await r.json();
+    if(!g.results?.length) return fail('Город не найден. Проверьте написание.');
+    const p = g.results[0];
+    load(p.latitude, p.longitude, p.name + (p.country ? ', ' + p.country : ''));
+  }catch{ fail('Ошибка поиска. Попробуйте ещё раз.'); }
+}
+
+document.getElementById('go').onclick = () => search(document.getElementById('q').value);
+document.getElementById('q').addEventListener('keydown', e => { if(e.key==='Enter') search(e.target.value); });
+document.getElementById('geo').onclick = () => {
+  hint.classList.remove('err'); hint.textContent='Определяем местоположение…';
+  navigator.geolocation.getCurrentPosition(
+    async pos => {
+      try{
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&accept-language=ru`);
+        const g = await r.json();
+        const name = g.address?.city || g.address?.town || g.address?.village || 'ваша локация';
+        load(pos.coords.latitude, pos.coords.longitude, name);
+      }catch{ load(pos.coords.latitude, pos.coords.longitude, 'ваша локация'); }
+    },
+    () => fail('Геолокация недоступна — введите город вручную.')
+  );
+};
+
+// Первая загрузка — попробуем геолокацию молча, иначе Москва
+skeleton();
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(
+    p => load(p.coords.latitude, p.coords.longitude, 'ваша локация'),
+    () => search('Москва'), {timeout:4000}
+  );
+} else search('Москва');
+</script>
+</body>
+</html>

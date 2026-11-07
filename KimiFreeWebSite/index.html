@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Имя Фамилия — Портфолио</title>
+    <meta name="description" content="Портфолио веб-разработчика">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<base target="_blank">
+</head>
+<body>
+
+    <!-- ПРЕЛОАДЕР -->
+    <div class="preloader" id="preloader">
+        <div class="preloader__spinner"></div>
+        <span class="preloader__text">&lt;Dev /&gt;</span>
+    </div>
+
+    <!-- ПОЛОСА ПРОГРЕССА СКРОЛЛА -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- КАСТОМНЫЙ КУРСОР -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- ЧАСТИЦЫ НА ФОНЕ -->
+    <canvas id="particles"></canvas>
+
+    <!-- ШАПКА / НАВИГАЦИЯ -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="#home" class="nav__logo">&lt;Dev /&gt;</a>
+            <div class="nav__menu" id="nav-menu">
+                <a href="#home" class="nav__link active" data-i18n="nav_home">Главная</a>
+                <a href="#about" class="nav__link" data-i18n="nav_about">Обо мне</a>
+                <a href="#skills" class="nav__link" data-i18n="nav_skills">Навыки</a>
+                <a href="#projects" class="nav__link" data-i18n="nav_projects">Проекты</a>
+                <a href="#contact" class="nav__link" data-i18n="nav_contact">Контакты</a>
+            </div>
+            <div class="nav__actions">
+                <!-- ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА -->
+                <div class="lang-switch" id="lang-switch">
+                    <button class="lang__btn" id="lang-btn">
+                        <span id="lang-current">🇷🇺</span> <span class="lang__arrow">▾</span>
+                    </button>
+                    <div class="lang__dropdown" id="lang-dropdown">
+                        <button class="lang__option" data-lang="ru">🇷🇺 Русский</button>
+                        <button class="lang__option" data-lang="en">🇬🇧 English</button>
+                        <button class="lang__option" data-lang="de">🇩🇪 Deutsch</button>
+                        <button class="lang__option" data-lang="fr">🇫🇷 Français</button>
+                        <button class="lang__option" data-lang="es">🇪🇸 Español</button>
+                        <button class="lang__option" data-lang="uk">🇺🇦 Українська</button>
+                        <button class="lang__option" data-lang="kk">🇰🇿 Қазақша</button>
+                        <button class="lang__option" data-lang="zh">🇨🇳 中文</button>
+                        <button class="lang__option" data-lang="ja">🇯🇵 日本語</button>
+                    </div>
+                </div>
+                <button class="nav__theme" id="theme-btn">🌙</button>
+            </div>
+            <div class="nav__toggle" id="nav-toggle">
+                <span></span><span></span><span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ГЛАВНАЯ -->
+    <section class="home section" id="home">
+        <div class="home__container container grid">
+            <div class="home__data">
+                <span class="home__greeting" data-i18n="home_greeting">Привет, меня зовут</span>
+                <h1 class="home__title">Имя <span>Фамилия</span></h1>
+                <h3 class="home__subtitle"><span data-i18n="home_iam">Я —</span> <span id="typing"></span><span class="cursor">|</span></h3>
+                <p class="home__description" data-i18n="home_desc">Разрабатываю красивые и быстрые веб-приложения, которые решают реальные задачи.</p>
+                <div class="home__buttons">
+                    <a href="#projects" class="btn" data-i18n="home_works">Мои работы</a>
+                    <a href="#contact" class="btn btn--ghost" data-i18n="home_contact">Связаться</a>
+                </div>
+                <div class="home__socials">
+                    <a href="https://github.com/TylerDerden-sketch" class="social__link">GitHub</a>
+                    <a href="#" class="social__link">Telegram</a>
+                    <a href="#" class="social__link">LinkedIn</a>
+                </div>
+            </div>
+            <div class="home__img">
+                <div class="blob"></div>
+            </div>
+        </div>
+        <a href="#about" class="home__scroll" data-i18n="home_scroll">↓ скролл</a>
+    </section>
+
+    <!-- ОБО МНЕ -->
+    <section class="about section" id="about">
+        <h2 class="section__title" data-i18n="about_title">Обо мне</h2>
+        <div class="about__container container grid">
+            <div class="about__content">
+                <p data-i18n="about_desc">Я веб-разработчик, увлечённый созданием интерфейсов. Люблю чистый код, продуманный UX и учиться новому каждый день.</p>
+                <div class="about__info">
+                    <div><span class="about__num" data-count="3">0</span>+ <br><span data-i18n="about_exp">года опыта</span></div>
+                    <div><span class="about__num" data-count="25">0</span>+ <br><span data-i18n="about_projects">проектов</span></div>
+                    <div><span class="about__num" data-count="40">0</span>+ <br><span data-i18n="about_clients">клиентов</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- НАВЫКИ -->
+    <section class="skills section" id="skills">
+        <h2 class="section__title" data-i18n="skills_title">Навыки</h2>
+        <div class="skills__container container grid">
+            <div class="skill">
+                <div class="skill__info"><span>HTML5</span><span>95%</span></div>
+                <div class="skill__bar"><div class="skill__progress" style="--w:95%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill__info"><span>CSS3 / Flexbox / Grid</span><span>90%</span></div>
+                <div class="skill__bar"><div class="skill__progress" style="--w:90%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill__info"><span>JavaScript</span><span>85%</span></div>
+                <div class="skill__bar"><div class="skill__progress" style="--w:85%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill__info"><span>React</span><span>70%</span></div>
+                <div class="skill__bar"><div class="skill__progress" style="--w:70%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill__info"><span>Git / GitHub</span><span>80%</span></div>
+                <div class="skill__bar"><div class="skill__progress" style="--w:80%"></div></div>
+            </div>
+            <div class="skill">
+                <div class="skill__info"><span>Figma</span><span>75%</span></div>
+                <div class="skill__bar"><div class="skill__progress" style="--w:75%"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ПРОЕКТЫ -->
+    <section class="projects section" id="projects">
+        <h2 class="section__title" data-i18n="projects_title">Проекты</h2>
+        <div class="projects__container container grid">
+            <article class="project__card">
+                <div class="project__img"></div>
+                <h3 class="project__title" data-i18n="p1_title">Интернет-магазин</h3>
+                <p class="project__description" data-i18n="p1_desc">Магазин с корзиной, фильтрами и оплатой. HTML, CSS, JS.</p>
+                <div class="project__tags"><span>HTML</span><span>CSS</span><span>JS</span></div>
+                <a href="projects/magazin.html" class="project__link" data-i18n="p_view">Посмотреть →</a>
+            </article>
+            <article class="project__card">
+                <div class="project__img"></div>
+                <h3 class="project__title" data-i18n="p2_title">Погодное приложение</h3>
+                <p class="project__description" data-i18n="p2_desc">Прогноз погоды по API с геолокацией.</p>
+                <div class="project__tags"><span>JS</span><span>API</span></div>
+                <a href="projects/pogoda.html" class="project__link" data-i18n="p_view">Посмотреть →</a>
+            </article>
+            <article class="project__card">
+                <div class="project__img"></div>
+                <h3 class="project__title" data-i18n="p3_title">Лендинг для бизнеса</h3>
+                <p class="project__description" data-i18n="p3_desc">Адаптивный лендинг с анимациями и формой заявки.</p>
+                <div class="project__tags"><span>HTML</span><span>CSS</span></div>
+                <a href="projects/landing.html" class="project__link" data-i18n="p_view">Посмотреть →</a>
+            </article>
+        </div>
+    </section>
+
+
+    <!-- БЕГУЩАЯ СТРОКА ТЕХНОЛОГИЙ -->
+    <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+            <span>HTML5 ✦ CSS3 ✦ JavaScript ✦ React ✦ TypeScript ✦ Node.js ✦ Git ✦ Figma ✦ Tailwind ✦ Webpack ✦ </span>
+            <span>HTML5 ✦ CSS3 ✦ JavaScript ✦ React ✦ TypeScript ✦ Node.js ✦ Git ✦ Figma ✦ Tailwind ✦ Webpack ✦ </span>
+        </div>
+    </div>
+
+    <!-- ВИДЕО СО СКРАББИНГОМ КОЛЕСОМ МЫШИ -->
+    <section class="videoplayer section" id="videoplayer">
+        <h2 class="section__title" data-i18n="video_title">Смотрите, как я работаю</h2>
+        <p class="videoplayer__hint" data-i18n="video_hint">🖱️ Крутите колесо мыши над видео — оно будет перематываться вперёд и назад</p>
+        <div class="videoplayer__frame" id="video-frame">
+            <video id="scroll-video" src="video.mp4" preload="auto" muted playsinline></video>
+            <div class="videoplayer__overlay" data-i18n="video_overlay">Прокручивайте колесо мыши</div>
+            <div class="videoplayer__progress"><div class="videoplayer__progress-bar" id="video-progress"></div></div>
+        </div>
+    </section>
+
+    <!-- УСЛУГИ -->
+    <section class="services section" id="services">
+        <h2 class="section__title" data-i18n="services_title">Чем я могу помочь</h2>
+        <div class="services__container container grid">
+            <div class="service__card tilt">
+                <div class="service__icon">🎨</div>
+                <h3 class="service__title" data-i18n="s1_title">Веб-дизайн</h3>
+                <p class="service__desc" data-i18n="s1_desc">Современный, минималистичный дизайн, который выделит вас среди конкурентов.</p>
+            </div>
+            <div class="service__card tilt">
+                <div class="service__icon">💻</div>
+                <h3 class="service__title" data-i18n="s2_title">Разработка сайтов</h3>
+                <p class="service__desc" data-i18n="s2_desc">Быстрые и адаптивные сайты на HTML, CSS и JavaScript под любые устройства.</p>
+            </div>
+            <div class="service__card tilt">
+                <div class="service__icon">🚀</div>
+                <h3 class="service__title" data-i18n="s3_title">Оптимизация</h3>
+                <p class="service__desc" data-i18n="s3_desc">Ускорение загрузки, SEO-оптимизация и улучшение пользовательского опыта.</p>
+            </div>
+            <div class="service__card tilt">
+                <div class="service__icon">🛠️</div>
+                <h3 class="service__title" data-i18n="s4_title">Поддержка</h3>
+                <p class="service__desc" data-i18n="s4_desc">Обновление контента, исправление багов и развитие проекта после запуска.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ТАЙМЛАЙН ОПЫТА -->
+    <section class="timeline section" id="experience">
+        <h2 class="section__title" data-i18n="timeline_title">Мой путь</h2>
+        <div class="timeline__container container">
+            <div class="timeline__item">
+                <div class="timeline__dot"></div>
+                <span class="timeline__date">2023 — 2026</span>
+                <h3 class="timeline__title" data-i18n="t1_title">Фриланс-разработчик</h3>
+                <p class="timeline__desc" data-i18n="t1_desc">Более 25 завершённых проектов для клиентов из разных стран.</p>
+            </div>
+            <div class="timeline__item">
+                <div class="timeline__dot"></div>
+                <span class="timeline__date">2022 — 2023</span>
+                <h3 class="timeline__title" data-i18n="t2_title">Junior Frontend Developer</h3>
+                <p class="timeline__desc" data-i18n="t2_desc">Работа в студии: вёрстка, анимации, поддержка крупных проектов.</p>
+            </div>
+            <div class="timeline__item">
+                <div class="timeline__dot"></div>
+                <span class="timeline__date">2020 — 2022</span>
+                <h3 class="timeline__title" data-i18n="t3_title">Самообучение</h3>
+                <p class="timeline__desc" data-i18n="t3_desc">Изучение HTML, CSS, JavaScript и создание первых проектов.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- КОНТАКТЫ -->
+    <section class="contact section" id="contact">
+        <h2 class="section__title" data-i18n="contact_title">Связаться со мной</h2>
+        <form class="contact__form container grid" id="contact-form">
+            <input type="text" placeholder="Ваше имя" required class="contact__input" data-i18n-ph="f_name">
+            <input type="email" placeholder="Ваш email" required class="contact__input" data-i18n-ph="f_email">
+            <textarea rows="6" placeholder="Сообщение" required class="contact__input" data-i18n-ph="f_msg"></textarea>
+            <button type="submit" class="btn" data-i18n="f_send">Отправить сообщение</button>
+            <p id="form-status"></p>
+        </form>
+    </section>
+
+    <!-- ПОДВАЛ -->
+    <footer class="footer">
+        <p><span data-i18n="footer">© 2026 Имя Фамилия. Сделано с ❤️</span></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

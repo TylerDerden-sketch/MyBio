@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOFFEE — зерно, которое будит</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --paper:#f4efe8; --ink:#221c15; --rust:#b3502e; --moss:#5a6b4f;
+    --radius:4px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Manrope',sans-serif;background:var(--paper);color:var(--ink);line-height:1.55}
+.serif{font-family:'Playfair Display',serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+/* шапка */
+header{padding:26px 0;display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid rgba(34,28,21,.15)}
+.logo{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;letter-spacing:.5px}
+.logo em{color:var(--rust);font-style:normal}
+nav a{color:var(--ink);text-decoration:none;margin-left:28px;font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+nav a:hover{color:var(--rust)}
+.cart-btn{position:relative;background:none;border:1.5px solid var(--ink);padding:8px 18px;border-radius:var(--radius);font-family:inherit;font-weight:600;cursor:pointer;font-size:13px;letter-spacing:.05em}
+.cart-btn b{background:var(--rust);color:#fff;border-radius:50%;padding:1px 7px;margin-left:6px;font-size:12px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;padding:80px 0 60px;align-items:center}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(42px,6vw,74px);line-height:1.05;font-weight:700}
+.hero h1 em{color:var(--rust)}
+.hero p{max-width:420px;margin:26px 0 34px;color:rgba(34,28,21,.7);font-size:17px}
+.btn{display:inline-block;background:var(--ink);color:var(--paper);padding:15px 36px;border-radius:var(--radius);text-decoration:none;font-weight:600;font-size:14px;letter-spacing:.05em;transition:.25s;border:1.5px solid var(--ink)}
+.btn:hover{background:var(--rust);border-color:var(--rust)}
+.btn-ghost{background:transparent;color:var(--ink);margin-left:12px}
+.btn-ghost:hover{background:var(--ink);color:var(--paper)}
+.hero-art{height:420px;border-radius:8px;background:
+  radial-gradient(circle at 30% 25%, #d9a066 0%, transparent 45%),
+  radial-gradient(circle at 75% 70%, #7a4a2b 0%, transparent 50%),
+  linear-gradient(160deg,#2e2118,#59402c);
+  position:relative;overflow:hidden}
+.hero-art::after{content:'☕';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:110px;filter:grayscale(.2) sepia(.4) opacity(.9)}
+.stamp{position:absolute;bottom:18px;left:18px;background:var(--paper);padding:8px 14px;border-radius:var(--radius);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--rust)}
+
+/* фильтры */
+.filters{display:flex;gap:10px;flex-wrap:wrap;padding:36px 0 10px;border-top:1px solid rgba(34,28,21,.15)}
+.chip{background:none;border:1.5px solid rgba(34,28,21,.3);padding:8px 20px;border-radius:40px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;color:var(--ink)}
+.chip.on,.chip:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* товары */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:26px;padding:30px 0 70px}
+.card{background:#fffdf9;border:1px solid rgba(34,28,21,.12);border-radius:8px;overflow:hidden;transition:.3s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(34,28,21,.14)}
+.card .ph{height:190px;display:flex;align-items:center;justify-content:center;font-size:72px}
+.card .body{padding:18px 20px 22px;display:flex;flex-direction:column;flex:1}
+.card h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:4px}
+.card .tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--moss);font-weight:800;margin-bottom:10px}
+.card p{font-size:14px;color:rgba(34,28,21,.65);flex:1}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+.price{font-weight:800;font-size:18px}
+.add{background:var(--rust);color:#fff;border:none;padding:10px 18px;border-radius:var(--radius);font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;transition:.2s}
+.add:hover{background:var(--ink)}
+.added{background:var(--moss)!important}
+
+/* корзина-панель */
+.drawer{position:fixed;top:0;right:-400px;width:min(400px,92vw);height:100vh;background:#fffdf9;border-left:1px solid rgba(34,28,21,.15);padding:28px;transition:right .35s cubic-bezier(.7,0,.3,1);z-index:50;display:flex;flex-direction:column}
+.drawer.open{right:0}
+.drawer h2{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:20px}
+.cart-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed rgba(34,28,21,.2);font-size:14px}
+.cart-item button{background:none;border:none;font-size:18px;cursor:pointer;color:var(--rust)}
+.total{margin-top:auto;padding-top:18px;border-top:2px solid var(--ink);display:flex;justify-content:space-between;font-weight:800;font-size:18px}
+.checkout{width:100%;margin-top:16px;background:var(--ink);color:#fff;border:none;padding:16px;border-radius:var(--radius);font-family:inherit;font-weight:700;font-size:14px;letter-spacing:.05em;cursor:pointer}
+.checkout:hover{background:var(--rust)}
+.empty{color:rgba(34,28,21,.5);text-align:center;padding:40px 0;font-size:14px}
+.overlay{position:fixed;inset:0;background:rgba(34,28,21,.4);opacity:0;pointer-events:none;transition:.3s;z-index:40}
+.overlay.on{opacity:1;pointer-events:all}
+footer{padding:34px 0;text-align:center;font-size:13px;color:rgba(34,28,21,.55);border-top:1px solid rgba(34,28,21,.15)}
+
+@media(max-width:820px){.hero{grid-template-columns:1fr}.hero-art{height:280px}nav a{margin-left:14px;font-size:12px}}
+</style>
+<base target="_blank">
+</head>
+<body>
+<div class="wrap">
+<header>
+    <div class="logo">KOF<em>FEE</em></div>
+    <nav>
+        <a href="#catalog">Каталог</a>
+        <a href="#about">О нас</a>
+        <button class="cart-btn" id="cart-open">Корзина <b id="cart-count">0</b></button>
+    </nav>
+</header>
+</div>
+
+<section class="hero wrap">
+    <div>
+        <h1>Кофе, который <em>будит</em> лучше будильника</h1>
+        <p>Обжариваем зерно небольшими партиями каждую неделю. Заказы до 15:00 — отправка в день заказа.</p>
+        <a href="#catalog" class="btn">Выбрать зерно</a>
+        <a href="#about" class="btn btn-ghost">Наша обжарка</a>
+    </div>
+    <div class="hero-art"><span class="stamp">Свежая обжарка · 12.11</span></div>
+</section>
+
+<div class="wrap">
+    <div class="filters" id="filters">
+        <button class="chip on" data-f="all">Все</button>
+        <button class="chip" data-f="arabica">Арабика</button>
+        <button class="chip" data-f="blend">Смеси</button>
+        <button class="chip" data-f="gear">Для заваривания</button>
+    </div>
+    <div class="grid" id="catalog"></div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer">
+    <h2>Корзина</h2>
+    <div id="cart-list"></div>
+    <div class="total"><span>Итого</span><span id="cart-total">0 ₽</span></div>
+    <button class="checkout" onclick="alert('Спасибо за заказ! (это демо)')">Оформить заказ</button>
+</aside>
+
+<footer class="wrap">© 2026 KOFFEE, СПб · Неваский проспект, 22 · +7 (812) 300-00-00</footer>
+
+<script>
+const GOODS = [
+ {id:1,name:'Эфиопия Йоргачеф',tag:'arabica',tagName:'Арабика',desc:'Цветочный аромат, ноты бергамота и мёда. Светлая обжарка.',price:890,icon:'🌼'},
+ {id:2,name:'Колумбия Супремо',tag:'arabica',tagName:'Арабика',desc:'Шоколад, карамель, орех. Средняя обжарка — универсальный вкус.',price:940,icon:'🍫'},
+ {id:3,name:'Бразилия Сантос',tag:'blend',tagName:'Смесь',desc:'Плотное тело, орехи и какао. Основа для капучино и эспрессо.',price:760,icon:'🥜'},
+ {id:4,name:'Домашняя смесь №3',tag:'blend',tagName:'Смесь',desc:'Наша фирменная: 70% арабики, 30% робусты. Бодрит по-настоящему.',price:680,icon:'⚡'},
+ {id:5,name:'Гватемала Антигуа',tag:'arabica',tagName:'Арабика',desc:'Дымная сладость, тёмный шоколад, специи. Тёмная обжарка.',price:1020,icon:'🌋'},
+ {id:6,name:'Воронка пуровер V60',tag:'gear',tagName:'Для заваривания',desc:'Керамика, 02 размер. Для чистой чашки с яркой кислотностью.',price:1850,icon:'⏳'},
+ {id:7,name:'Френч-пресс 600 мл',tag:'gear',tagName:'Для заваривания',desc:'Жаропрочное стекло, металлический фильтр. Двум хватит.',price:1450,icon:'🫖'},
+ {id:8,name:'Гейзерная кофеварка',tag:'gear',tagName:'Для заваривания',desc:'Алюминий, 3 чашки. Работает на плите — ничего лишнего.',price:2150,icon:'🏔'},
+];
+const fmt = n => n.toLocaleString('ru-RU') + ' ₽';
+const grid = document.getElementById('catalog');
+let cart = [];
+
+function render(list){
+  grid.innerHTML = list.map(g => `
+    <div class="card">
+      <div class="ph" style="background:hsl(${g.id*37%360},30%,92%)">${g.icon}</div>
+      <div class="body">
+        <div class="tag">${g.tagName}</div>
+        <h3>${g.name}</h3>
+        <p>${g.desc}</p>
+        <div class="row"><span class="price">${fmt(g.price)}</span>
+        <button class="add" data-id="${g.id}">В корзину</button></div>
+      </div>
+    </div>`).join('');
+  grid.querySelectorAll('.add').forEach(b => b.onclick = () => addToCart(+b.dataset.id, b));
+}
+render(GOODS);
+
+document.getElementById('filters').onclick = e => {
+  const b = e.target.closest('.chip'); if(!b) return;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  b.classList.add('on');
+  render(b.dataset.f === 'all' ? GOODS : GOODS.filter(g => g.tag === b.dataset.f));
+};
+
+function addToCart(id, btn){
+  const item = cart.find(i => i.id === id);
+  item ? item.qty++ : cart.push({id, qty:1});
+  if(btn){ btn.textContent='Добавлено ✓'; btn.classList.add('added');
+    setTimeout(()=>{btn.textContent='В корзину';btn.classList.remove('added')}, 900); }
+  renderCart();
+}
+function renderCart(){
+  const list = document.getElementById('cart-list');
+  const count = cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('cart-count').textContent = count;
+  if(!cart.length){ list.innerHTML = '<div class="empty">Пока пусто. Загляните в каталог — там хорошо.</div>';
+    document.getElementById('cart-total').textContent = fmt(0); return; }
+  list.innerHTML = cart.map(i => { const g = GOODS.find(x=>x.id===i.id); return `
+    <div class="cart-item"><span>${g.name} × ${i.qty}</span>
+    <span>${fmt(g.price*i.qty)} <button onclick="rm(${i.id})">×</button></span></div>`; }).join('');
+  document.getElementById('cart-total').textContent =
+    fmt(cart.reduce((s,i)=> s + GOODS.find(g=>g.id===i.id).price*i.qty, 0));
+}
+function rm(id){ cart = cart.filter(i=>i.id!==id); renderCart(); }
+const drawer = document.getElementById('drawer'), overlay = document.getElementById('overlay');
+document.getElementById('cart-open').onclick = () => { drawer.classList.add('open'); overlay.classList.add('on'); };
+overlay.onclick = () => { drawer.classList.remove('open'); overlay.classList.remove('on'); };
+renderCart();
+</script>
+</body>
+</html>
